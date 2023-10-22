@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20231008143019 extends AbstractMigration
+final class Version20231022210828 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -20,7 +20,8 @@ final class Version20231008143019 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('CREATE TABLE image (id INT NOT NULL, product_id INT DEFAULT NULL, filepath VARCHAR(255) NOT NULL, webpath VARCHAR(255) NOT NULL, filesize INT NOT NULL, extension VARCHAR(255) NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE SEQUENCE image_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
+        $this->addSql('CREATE TABLE image (id INT NOT NULL, product_id INT DEFAULT NULL, path VARCHAR(255) NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_C53D045F4584665A ON image (product_id)');
         $this->addSql('ALTER TABLE image ADD CONSTRAINT FK_C53D045F4584665A FOREIGN KEY (product_id) REFERENCES product (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
     }
@@ -29,6 +30,7 @@ final class Version20231008143019 extends AbstractMigration
     {
         // this down() migration is auto-generated, please modify it to your needs
         $this->addSql('CREATE SCHEMA public');
+        $this->addSql('DROP SEQUENCE image_id_seq CASCADE');
         $this->addSql('ALTER TABLE image DROP CONSTRAINT FK_C53D045F4584665A');
         $this->addSql('DROP TABLE image');
     }

@@ -2,13 +2,14 @@
 
 namespace App\Entity;
 
+use App\EventListener\ProductListener;
 use App\Repository\ProductRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
-#[ORM\HasLifecycleCallbacks]
+#[ORM\EntityListeners([ProductListener::class])]
 class Product
 {
     #[ORM\Id]
@@ -40,7 +41,10 @@ class Product
     #[ORM\Column]
     private ?\DateTimeImmutable $updatedAt = null;
 
-    #[ORM\OneToMany(mappedBy: 'product', targetEntity: Image::class)]
+    #[ORM\Column(nullable: true)]
+    private ?array $photos = null;
+
+    #[ORM\OneToMany(mappedBy: 'product', targetEntity: Image::class, cascade: ['persist'])]
     private Collection $images;
 
     public function __construct()
@@ -150,14 +154,16 @@ class Product
         return $this;
     }
 
-    #[ORM\PrePersist]
-    #[ORM\PreUpdate]
-    public function updatedTimestamps(): void
+    public function getPhotos(): ?array
     {
-        $this->updatedAt = new \DateTimeImmutable();
-        if (null === $this->createdAt) {
-            $this->createdAt = new \DateTimeImmutable();
-        }
+        return $this->photos;
+    }
+
+    public function setPhotos(?array $photos): static
+    {
+        $this->photos = $photos;
+
+        return $this;
     }
 
     /**
