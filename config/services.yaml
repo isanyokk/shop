@@ -20,11 +20,12 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
-    App\EventSubscriber\UploadImageSubscriber:
+
+    App\EventListener\ProductListener:
         tags:
-            name: 'doctrine.orm.entity_listener'
-            event: 'postPersist'
-            entity: 'App\Entity\Product'
+            - { name: doctrine.orm.entity_listener }
+        arguments:
+            $projectDir: '%kernel.project_dir%'
 
 
     # add more service definitions when explicit configuration is needed

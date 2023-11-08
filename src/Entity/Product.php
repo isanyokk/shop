@@ -7,11 +7,14 @@ use App\Repository\ProductRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\DependencyInjection\Container;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
 #[ORM\EntityListeners([ProductListener::class])]
 class Product
 {
+    public const IMAGES_PATH = 'public/uploads/images/product/';
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -44,13 +47,9 @@ class Product
     #[ORM\Column(nullable: true)]
     private ?array $photos = null;
 
-    #[ORM\OneToMany(mappedBy: 'product', targetEntity: Image::class, cascade: ['persist'])]
-    private Collection $images;
-
-    public function __construct()
+    public function __construct(Container $container)
     {
         $this->type = 1;
-        $this->images = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -162,36 +161,6 @@ class Product
     public function setPhotos(?array $photos): static
     {
         $this->photos = $photos;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Image>
-     */
-    public function getImages(): Collection
-    {
-        return $this->images;
-    }
-
-    public function addImage(Image $image): static
-    {
-        if (!$this->images->contains($image)) {
-            $this->images->add($image);
-            $image->setProduct($this);
-        }
-
-        return $this;
-    }
-
-    public function removeImage(Image $image): static
-    {
-        if ($this->images->removeElement($image)) {
-            // set the owning side to null (unless already changed)
-            if ($image->getProduct() === $this) {
-                $image->setProduct(null);
-            }
-        }
 
         return $this;
     }

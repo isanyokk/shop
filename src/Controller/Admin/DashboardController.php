@@ -32,6 +32,5 @@ class DashboardController extends AbstractDashboardController
     public function configureMenuItems(): iterable
     {
         yield MenuItem::linkToCrud('Товары', 'fas fa-list', Product::class);
-        yield MenuItem::linkToCrud('Фото товаров', 'fas fa-list', Image::class);
     }
 }
