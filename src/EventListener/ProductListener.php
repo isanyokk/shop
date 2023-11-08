@@ -3,10 +3,14 @@
 namespace App\EventListener;
 
 use App\Entity\Product;
+use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
 use Doctrine\ORM\Event\PrePersistEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
+use Doctrine\ORM\Events;
 use Symfony\Component\Filesystem\Filesystem;
 
+#[AsEntityListener(event: Events::preUpdate, entity: Product::class)]
+#[AsEntityListener(event: Events::prePersist, entity: Product::class)]
 class ProductListener
 {
     public function __construct(private readonly string $projectDir)

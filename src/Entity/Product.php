@@ -10,7 +10,6 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\DependencyInjection\Container;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
-#[ORM\EntityListeners([ProductListener::class])]
 class Product
 {
     public const IMAGES_PATH = 'public/uploads/images/product/';
@@ -29,9 +28,6 @@ class Product
     #[ORM\Column]
     private ?int $price = null;
 
-    #[ORM\Column]
-    private ?int $type = null;
-
     #[ORM\Column(nullable: true)]
     private ?int $discountPercent = null;
 
@@ -47,10 +43,9 @@ class Product
     #[ORM\Column(nullable: true)]
     private ?array $photos = null;
 
-    public function __construct(Container $container)
-    {
-        $this->type = 1;
-    }
+    #[ORM\ManyToOne(inversedBy: 'products')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?ProductType $type = null;
 
     public function getId(): ?int
     {
@@ -89,18 +84,6 @@ class Product
     public function setPrice(int $price): static
     {
         $this->price = $price;
-
-        return $this;
-    }
-
-    public function getType(): ?int
-    {
-        return $this->type;
-    }
-
-    public function setType(int $type): static
-    {
-        $this->type = $type;
 
         return $this;
     }
@@ -161,6 +144,18 @@ class Product
     public function setPhotos(?array $photos): static
     {
         $this->photos = $photos;
+
+        return $this;
+    }
+
+    public function getType(): ?ProductType
+    {
+        return $this->type;
+    }
+
+    public function setType(?ProductType $type): static
+    {
+        $this->type = $type;
 
         return $this;
     }

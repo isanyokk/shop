@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\Image;
 use App\Entity\Product;
+use App\Entity\ProductType;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
@@ -26,11 +27,12 @@ class DashboardController extends AbstractDashboardController
             ->setLocales([
                 'ru' => 'ru',
             ])
-            ->setTitle('Shop');
+            ->setTitle('Магазин');
     }
 
     public function configureMenuItems(): iterable
     {
         yield MenuItem::linkToCrud('Товары', 'fas fa-list', Product::class);
+        yield MenuItem::linkToCrud('Типы товаров', 'fas fa-list', ProductType::class);
     }
 }
