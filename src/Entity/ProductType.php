@@ -34,6 +34,9 @@ class ProductType
     #[ORM\OneToMany(mappedBy: 'type', targetEntity: Product::class)]
     private Collection $products;
 
+    #[ORM\Column(length: 255)]
+    private ?string $image = null;
+
     public function __construct()
     {
         $this->products = new ArrayCollection();
@@ -135,5 +138,17 @@ class ProductType
         if (null === $this->slug) {
             $this->slug = (string)$slugger->slug((string)$this)->lower();
         }
+    }
+
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
+
+    public function setImage(string $image): static
+    {
+        $this->image = $image;
+
+        return $this;
     }
 }
