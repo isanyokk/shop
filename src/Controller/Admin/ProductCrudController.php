@@ -44,7 +44,7 @@ class ProductCrudController extends AbstractCrudController
             DateTimeField::new('createdAt')->hideOnForm()->setLabel('Дата создания'),
             DateTimeField::new('updatedAt')->hideOnForm()->setLabel('Дата последнего обновления'),
             AssociationField::new('type')->setLabel('Тип'),
-            CollectionField::new('photos')
+            CollectionField::new('images')
                 ->setEntryType(PhotoUploadType::class)
                 ->setLabel('Фото'),
         ];
@@ -60,13 +60,13 @@ class ProductCrudController extends AbstractCrudController
 
     public function persistEntity(EntityManagerInterface $entityManager, $entityInstance): void
     {
-        $entityInstance->setPhotos(array_values($entityInstance->getPhotos()));
+        $entityInstance->setImages(array_values($entityInstance->getImages()));
         parent::persistEntity($entityManager, $entityInstance);
     }
 
     public function updateEntity(EntityManagerInterface $entityManager, $entityInstance): void
     {
-        $entityInstance->setPhotos(array_values($entityInstance->getPhotos()));
+        $entityInstance->setImages(array_values($entityInstance->getImages()));
         parent::updateEntity($entityManager, $entityInstance);
     }
 

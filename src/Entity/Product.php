@@ -2,14 +2,12 @@
 
 namespace App\Entity;
 
-use App\EventListener\ProductListener;
+use ApiPlatform\Metadata\ApiResource;
 use App\Repository\ProductRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\DependencyInjection\Container;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
+#[ApiResource]
 class Product
 {
     public const IMAGES_PATH = 'public/uploads/images/product/';
@@ -40,12 +38,12 @@ class Product
     #[ORM\Column]
     private ?\DateTimeImmutable $updatedAt = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?array $photos = null;
-
-    #[ORM\ManyToOne(inversedBy: 'products')]
+    #[ORM\ManyToOne(cascade: ['persist'], inversedBy: 'products')]
     #[ORM\JoinColumn(nullable: false)]
     private ?ProductType $type = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?array $images = null;
 
     public function getId(): ?int
     {
@@ -136,18 +134,6 @@ class Product
         return $this;
     }
 
-    public function getPhotos(): ?array
-    {
-        return $this->photos;
-    }
-
-    public function setPhotos(?array $photos): static
-    {
-        $this->photos = $photos;
-
-        return $this;
-    }
-
     public function getType(): ?ProductType
     {
         return $this->type;
@@ -156,6 +142,18 @@ class Product
     public function setType(?ProductType $type): static
     {
         $this->type = $type;
+
+        return $this;
+    }
+
+    public function getImages(): ?array
+    {
+        return $this->images;
+    }
+
+    public function setImages(?array $images): static
+    {
+        $this->images = $images;
 
         return $this;
     }
