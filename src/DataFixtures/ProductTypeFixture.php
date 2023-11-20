@@ -15,10 +15,9 @@ class ProductTypeFixture extends Fixture
     {
         $faker = Factory::create();
         $populator = new Populator($faker, $manager);
-        $populator->addEntity(ProductType::class, 10, ['created_at' => new \DateTimeImmutable()]);
-        $populator->addEntity(Product::class, 200);
+        ini_set('memory_limit', -1);
+        $populator->addEntity(ProductType::class, 10000, ['created_at' => new \DateTimeImmutable()]);
+        $populator->addEntity(Product::class, 1000000);
         $populator->execute();
     }
-
-
 }

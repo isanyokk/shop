@@ -2,12 +2,24 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use App\Controller\Api\ProductController;
 use App\Repository\ProductRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
-#[ApiResource]
+#[ApiResource(operations: [
+    new Get(),
+    new GetCollection(),
+    new Get(
+        uriTemplate: '/products/jopa', routeName: 'getOne', controller: ProductController::class, name: 'getOne'
+    )
+], order: ['id' => 'DESC'])]
+#[ApiFilter(SearchFilter::class, properties: ['id' => 'exact', 'type' => 'exact', 'title' => 'partial'])]
 class Product
 {
     public const IMAGES_PATH = 'public/uploads/images/product/';
