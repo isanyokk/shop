@@ -9,6 +9,8 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use App\Controller\Api\ProductController;
 use App\Repository\ProductRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
@@ -56,6 +58,14 @@ class Product
 
     #[ORM\Column(nullable: true)]
     private ?array $images = null;
+
+    #[ORM\ManyToMany(targetEntity: Param::class, inversedBy: 'products')]
+    private Collection $params;
+
+    public function __construct()
+    {
+        $this->params = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -166,6 +176,30 @@ class Product
     public function setImages(?array $images): static
     {
         $this->images = $images;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Param>
+     */
+    public function getParams(): Collection
+    {
+        return $this->params;
+    }
+
+    public function addParam(Param $param): static
+    {
+        if (!$this->params->contains($param)) {
+            $this->params->add($param);
+        }
+
+        return $this;
+    }
+
+    public function removeParam(Param $param): static
+    {
+        $this->params->removeElement($param);
 
         return $this;
     }
