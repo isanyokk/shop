@@ -44,6 +44,7 @@ class ProductCrudController extends AbstractCrudController
             DateTimeField::new('createdAt')->hideOnForm()->setLabel('Дата создания'),
             DateTimeField::new('updatedAt')->hideOnForm()->setLabel('Дата последнего обновления'),
             AssociationField::new('type')->setLabel('Тип'),
+            AssociationField::new('params')->setLabel('Тип'),
             CollectionField::new('images')
                 ->setEntryType(PhotoUploadType::class)
                 ->setLabel('Фото'),

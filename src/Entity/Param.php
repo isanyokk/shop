@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ParamRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Param
 {
     #[ORM\Id]
@@ -31,6 +32,11 @@ class Param
     public function __construct()
     {
         $this->products = new ArrayCollection();
+    }
+
+    public function __toString(): string
+    {
+        return $this->type->getValue().': '.$this->value;
     }
 
     public function getId(): ?int
@@ -97,6 +103,14 @@ class Param
         if ($this->products->removeElement($product)) {
             $product->removeParam($this);
         }
+
+        return $this;
+    }
+
+    #[ORM\PrePersist]
+    public function defaultCreatedAt(): self
+    {
+        $this->created_at = new \DateTimeImmutable();
 
         return $this;
     }

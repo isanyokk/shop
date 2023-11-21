@@ -3,6 +3,8 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Image;
+use App\Entity\Param;
+use App\Entity\ParamType;
 use App\Entity\Product;
 use App\Entity\ProductType;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
@@ -34,5 +36,7 @@ class DashboardController extends AbstractDashboardController
     {
         yield MenuItem::linkToCrud('Товары', 'fas fa-list', Product::class);
         yield MenuItem::linkToCrud('Типы товаров', 'fas fa-list', ProductType::class);
+        yield MenuItem::linkToCrud('Параметры', 'fas fa-list', Param::class);
+        yield MenuItem::linkToCrud('Типы параметров', 'fas fa-list', ParamType::class);
     }
 }

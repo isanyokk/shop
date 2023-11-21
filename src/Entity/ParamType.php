@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ParamTypeRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class ParamType
 {
     #[ORM\Id]
@@ -27,6 +28,11 @@ class ParamType
     public function __construct()
     {
         $this->params = new ArrayCollection();
+    }
+
+    public function __toString(): string
+    {
+        return $this->value;
     }
 
     public function getId(): ?int
@@ -84,6 +90,14 @@ class ParamType
     public function setCreatedAt(\DateTimeImmutable $created_at): static
     {
         $this->created_at = $created_at;
+
+        return $this;
+    }
+
+    #[ORM\PrePersist]
+    public function defaultCreatedAt(): self
+    {
+        $this->created_at = new \DateTimeImmutable();
 
         return $this;
     }
