@@ -8,12 +8,15 @@ use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use App\Controller\Api\ProductController;
 use App\Repository\ProductRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
 #[ApiResource(operations: [
@@ -21,7 +24,9 @@ use Symfony\Component\Serializer\Annotation\Groups;
     new GetCollection(),
     new Get(
         uriTemplate: '/products/jopa', routeName: 'getOne', controller: ProductController::class, name: 'getOne'
-    )
+    ),
+    new Post(validationContext: ['groups' => ['Default', 'postValidation']]),
+    new Put(validationContext: ['groups' => ['Default', 'putValidation']]),
 ], normalizationContext: ['groups' => ['product']], order: ['id' => 'DESC'])]
 #[ApiFilter(SearchFilter::class, properties: ['id' => 'exact', 'type' => 'exact', 'title' => 'partial', 'price' => ''])]
 #[ApiFilter(RangeFilter::class, properties: ['price'])]
@@ -37,6 +42,8 @@ class Product
 
     #[ORM\Column(length: 255)]
     #[Groups(['product'])]
+    #[Assert\NotBlank(groups: ['postValidation'])]
+    #[Assert\NotNull]
     private ?string $title = null;
 
     #[ORM\Column(type: 'text', nullable: true)]
@@ -44,12 +51,17 @@ class Product
 
     #[ORM\Column]
     #[Groups(['product'])]
+    #[Assert\GreaterThan(value: 0, groups: ['postValidation', 'putValidation'])]
+    #[Assert\NotNull]
     private ?int $price = null;
 
     #[ORM\Column(nullable: true)]
+    #[Assert\GreaterThanOrEqual(value: 0, groups: ['postValidation', 'putValidation'])]
+    #[Assert\LessThanOrEqual(value: 100,groups: ['postValidation', 'putValidation'])]
     private ?int $discountPercent = null;
 
     #[ORM\Column(nullable: true)]
+    #[Assert\GreaterThanOrEqual(value: 0, groups: ['postValidation', 'putValidation'])]
     private ?int $discountValue = null;
 
     #[ORM\Column]
@@ -61,6 +73,7 @@ class Product
     #[ORM\ManyToOne(cascade: ['persist'], inversedBy: 'products')]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['product'])]
+    #[Assert\EnableAutoMapping]
     private ?ProductType $type = null;
 
     #[ORM\Column(nullable: true)]
