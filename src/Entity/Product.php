@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\RangeFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
@@ -12,6 +13,7 @@ use App\Repository\ProductRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
 #[ApiResource(operations: [
@@ -20,8 +22,9 @@ use Doctrine\ORM\Mapping as ORM;
     new Get(
         uriTemplate: '/products/jopa', routeName: 'getOne', controller: ProductController::class, name: 'getOne'
     )
-], order: ['id' => 'DESC'])]
-#[ApiFilter(SearchFilter::class, properties: ['id' => 'exact', 'type' => 'exact', 'title' => 'partial'])]
+], normalizationContext: ['groups' => ['product']], order: ['id' => 'DESC'])]
+#[ApiFilter(SearchFilter::class, properties: ['id' => 'exact', 'type' => 'exact', 'title' => 'partial', 'price' => ''])]
+#[ApiFilter(RangeFilter::class, properties: ['price'])]
 class Product
 {
     public const IMAGES_PATH = 'public/uploads/images/product/';
@@ -29,15 +32,18 @@ class Product
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['product'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['product'])]
     private ?string $title = null;
 
     #[ORM\Column(type: 'text', nullable: true)]
     private ?string $description = null;
 
     #[ORM\Column]
+    #[Groups(['product'])]
     private ?int $price = null;
 
     #[ORM\Column(nullable: true)]
@@ -54,6 +60,7 @@ class Product
 
     #[ORM\ManyToOne(cascade: ['persist'], inversedBy: 'products')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['product'])]
     private ?ProductType $type = null;
 
     #[ORM\Column(nullable: true)]

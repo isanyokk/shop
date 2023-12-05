@@ -1,4 +1,4 @@
 app\Entity\Product:
   operations:
     ApiPlatform\Metadata\GetCollection:
-      filters: ['product.search_filter', 'product.order_filter']
+      filters: ['product.search_filter', 'product.range_filter']
