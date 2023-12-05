@@ -1,4 +1,10 @@
 app\Entity\Product:
   operations:
+    ApiPlatform\Metadata\Get: ~
+    getJopa:
+      class: ApiPlatform\Metadata\Get
+      method: GET
+      uriTemplate: /product/{id}/jopa
+      controller: App\Controller\Api\src\Controller\ProductController
     ApiPlatform\Metadata\GetCollection:
       filters: ['product.search_filter', 'product.range_filter']

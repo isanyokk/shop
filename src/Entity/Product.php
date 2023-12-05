@@ -2,15 +2,16 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Action\PlaceholderAction;
 use ApiPlatform\Doctrine\Orm\Filter\RangeFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
-use ApiPlatform\Metadata\Put;
-use App\Controller\Api\ProductController;
+use App\Controller\Api\src\Controller\ProductController;
 use App\Repository\ProductRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -23,10 +24,12 @@ use Symfony\Component\Validator\Constraints as Assert;
     new Get(),
     new GetCollection(),
     new Get(
-        uriTemplate: '/products/jopa', routeName: 'getOne', controller: ProductController::class, name: 'getOne'
+        uriTemplate: '/products/{id}/jopa',
+        controller: ProductController::class,
+        name: 'getJopa'
     ),
     new Post(validationContext: ['groups' => ['Default', 'postValidation']]),
-    new Put(validationContext: ['groups' => ['Default', 'putValidation']]),
+    new Patch(validationContext: ['groups' => ['Default', 'patchValidation']]),
 ], normalizationContext: ['groups' => ['product']], order: ['id' => 'DESC'])]
 #[ApiFilter(SearchFilter::class, properties: ['id' => 'exact', 'type' => 'exact', 'title' => 'partial', 'price' => ''])]
 #[ApiFilter(RangeFilter::class, properties: ['price'])]
@@ -51,17 +54,17 @@ class Product
 
     #[ORM\Column]
     #[Groups(['product'])]
-    #[Assert\GreaterThan(value: 0, groups: ['postValidation', 'putValidation'])]
+    #[Assert\GreaterThan(value: 0, groups: ['postValidation', 'patchValidation'])]
     #[Assert\NotNull]
     private ?int $price = null;
 
     #[ORM\Column(nullable: true)]
-    #[Assert\GreaterThanOrEqual(value: 0, groups: ['postValidation', 'putValidation'])]
-    #[Assert\LessThanOrEqual(value: 100,groups: ['postValidation', 'putValidation'])]
+    #[Assert\GreaterThanOrEqual(value: 0, groups: ['postValidation', 'patchValidation'])]
+    #[Assert\LessThanOrEqual(value: 100,groups: ['postValidation', 'patchValidation'])]
     private ?int $discountPercent = null;
 
     #[ORM\Column(nullable: true)]
-    #[Assert\GreaterThanOrEqual(value: 0, groups: ['postValidation', 'putValidation'])]
+    #[Assert\GreaterThanOrEqual(value: 0, groups: ['postValidation', 'patchValidation'])]
     private ?int $discountValue = null;
 
     #[ORM\Column]
