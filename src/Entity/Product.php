@@ -2,7 +2,6 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Action\PlaceholderAction;
 use ApiPlatform\Doctrine\Orm\Filter\RangeFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
@@ -31,7 +30,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     new Post(validationContext: ['groups' => ['Default', 'postValidation']]),
     new Patch(validationContext: ['groups' => ['Default', 'patchValidation']]),
 ], normalizationContext: ['groups' => ['product']], order: ['id' => 'DESC'])]
-#[ApiFilter(SearchFilter::class, properties: ['id' => 'exact', 'type' => 'exact', 'title' => 'partial', 'price' => ''])]
+#[ApiFilter(SearchFilter::class, properties: ['id' => 'exact', 'type' => 'exact', 'title' => 'partial'])]
 #[ApiFilter(RangeFilter::class, properties: ['price'])]
 class Product
 {
